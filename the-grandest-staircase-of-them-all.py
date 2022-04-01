@@ -34,78 +34,6 @@
 
 # Write a function called solution(n) that takes a positive integer n and returns the number of different staircases that can be built from exactly n bricks. n will always be at least 3 (so you can have a staircase at all), but no more than 200, because Commander Lambda's not made of money!
 
-possibleConifgurations = set([])
-
-def serialize(list):
-    return ",".join(map(str, list))
-
-
-def checkSteps(steps):
-    
-    if (serialize(steps)) in possibleConifgurations:
-        # print(steps, " is not valid [duplicate]")
-        return False
-    
-    last = steps[0]
-    for i in range(1, len(steps)):
-        if steps[i] >= last:
-            # print(steps, " is not valid")
-            return False
-        last = steps[i]
-    possibleConifgurations.add(serialize(steps))
-    # print(steps, " is valid")
-    return True
-
-def dropStep(steps):
-    
-    for i in range(len(steps)):
-
-        if steps[len(steps) - 1] > 1:
-            steps.append(0)
-        
-        if i < len(steps) - 1 and steps[i + 1] == steps[i] - 1 or steps[i] == 0: continue
-        for j in range(i + 1, len(steps)):
-            
-            steps[i] -= 1
-            steps[j] += 1
-
-            if checkSteps(steps):
-                dropStep(steps)
-
-            steps[j] -= 1
-            steps[i] += 1
-        
-        if steps[len(steps) - 1] == 0:
-            steps.pop()
-            
-    return
-
-def solution1(n):
-    
-    possibleConifgurations.clear()
-    
-    steps = [n - 1, 1]
-
-    checkSteps(steps)
-    dropStep(steps)
-
-    return len(possibleConifgurations)
-
-def isPrime(n):
-    if n == 2: return True
-    if n % 2 == 0: return False
-    for i in range(3, int(n ** 0.5) + 1, 2):
-        if n % i == 0: return False
-    return True
-
-def factorial(n):
-    if n == 0: return 1
-    return n * factorial(n - 1)
-
-def addAll(n):
-    if n == 0: return 0
-    return n + addAll(n - 1)
-
 def solution(n):
     
     table = [1] + [0] * n
@@ -126,7 +54,3 @@ equals("Test 4", 3, lambda: solution(6))
 equals("Test 5", 5, lambda: solution(8))
 equals("Test 6", 9, lambda: solution(10))
 equals("Test 7", 487067745, lambda: solution(200))
-
-equals("CheckSteps Test 1", True, lambda: checkSteps([3, 2, 1]))
-equals("CheckSteps Test 2", True, lambda: checkSteps([5, 4, 2, 1]))
-equals("CheckSteps Test 3", False, lambda: checkSteps([3, 3, 1]))
